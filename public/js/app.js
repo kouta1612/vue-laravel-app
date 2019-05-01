@@ -17,7 +17,49 @@ class Errors {
         this.errors = errors;
     }
     clear(field) {
-        delete this.errors[field];
+        if (field) {
+            delete this.errors[field];
+            return;
+        }
+        this.errors = {};
+    }
+}
+
+class Form {
+    constructor(data) {
+        this.originalData = data;
+
+        for (let field in data) {
+            this[field] = data.field;
+        }
+
+        this.errors = new Errors();
+    }
+    data() {
+        let data = Object.assign({}, this);
+
+        delete data.originalData;
+        delete data.errors;
+
+        return data;
+    }
+    reset() {
+        for (let field in this.originalData) {
+            this[field] = '';
+        }
+    }
+    submit(requestType, url) {
+        axios[requestType](url, this.data())
+            .then(this.onSuccess.bind(this))
+            .catch(this.onFail.bind(this));
+    }
+    onSuccess(response) {
+        alert(response.data.message);
+        this.errors.clear();
+        this.reset();
+    }
+    onFail(error) {
+        this.errors.record(error.response.data.errors);
     }
 }
 
@@ -25,21 +67,15 @@ new Vue({
     el: '#app',
 
     data: {
-        'name': '',
-        'description': '',
-        'errors': new Errors()
+        'form': new Form({
+            name: '',
+            description: ''
+        }),
     },
 
     methods: {
         onSubmit() {
-            axios.post('/projects', this.$data)
-                .then(response => onSuccess)
-                .catch(error => this.errors.record(error.response.data.errors));
-        },
-        onSuccess() {
-            alert('Success');
-            this.name = '';
-            this.description = '';
+            this.form.submit('post', '/projects');
         }
     }
 });
