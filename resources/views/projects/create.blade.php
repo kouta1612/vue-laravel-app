@@ -8,6 +8,7 @@
 </head>
 <body>
     <div id="app" class="container">
+        <example></example>
         <form action="/projects" method="POST" @submit.prevent="onSubmit" @keydown="form.errors.clear($event.target.name)">
             <div class="control">
                 <label for="name" class="label">Project Name:</label>
@@ -31,8 +32,6 @@
         </form>
     </div>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
     <script src="/js/app.js"></script>
 </body>
 </html>
