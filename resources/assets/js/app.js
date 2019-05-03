@@ -8,7 +8,6 @@ window.Form = Form;
 
 new Vue({
     el: '#app',
-
     components: {
         Example
     },
